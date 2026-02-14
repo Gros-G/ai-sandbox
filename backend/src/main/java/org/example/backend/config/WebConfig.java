@@ -1,4 +1,5 @@
-package org.example.backend;
+
+package org.example.backend.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
