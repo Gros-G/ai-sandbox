@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Logback Configuration File for Sandbox Application
+    ===================================================
+
+    This file configures logging for the entire application using Logback,
+    which is the default logging framework for Spring Boot.
+
+    Key Concepts:
+    - Appenders: Define WHERE logs are written (console, file, etc.)
+    - Loggers: Define WHAT gets logged (packages, classes, levels)
+    - Levels: DEBUG < INFO < WARN < ERROR (DEBUG shows most, ERROR shows least)
+
+    Documentation: https://logback.qos.ch/manual/
+-->
+
+<configuration debug="false">
+    <!-- ====================================================================
+         PROPERTIES: Reusable variables for file paths and patterns
+         ==================================================================== -->
+
+    <!-- Define the log message format (pattern):
+         %d{yyyy-MM-dd HH:mm:ss} = timestamp
+         %logger{36}              = logger name (max 36 chars)
+         %L                       = line number
+         %thread                  = thread name
+         %level                   = log level (DEBUG, INFO, etc.)
+         %msg                     = the actual log message
+         %n                       = newline
+    -->
+    <!-- Pattern for console (less verbose) -->
+    <property name="CONSOLE_PATTERN" value="%d{HH:mm:ss.SSS} [%-5level] %logger{0}: %msg%n"/>
+
+
+    <!-- ====================================================================
+         APPENDERS: Define where log messages go
+         ==================================================================== -->
+
+    <!-- 1. CONSOLE APPENDER: Logs to the console/terminal
+         This is useful for development and monitoring
+    -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- Target: System.out (normal output) or System.err (errors) -->
+        <target>System.out</target>
+
+        <!-- Encode the log message using UTF-8 and our CONSOLE_PATTERN -->
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>${CONSOLE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+
+
+
+
+    <!-- ====================================================================
+         LOGGERS: Define which packages/classes to log and at what level
+         ==================================================================== -->
+
+    <!-- Configure logging for your application packages -->
+    <logger name="ai.sandbox" level="DEBUG" additivity="false">
+        <!-- Use CONSOLE appender for your app -->
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+
+    <!-- Configure Spring Framework logging -->
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.springframework.boot" level="INFO"/>
+    <logger name="org.springframework.web" level="INFO"/>
+
+
+    <!-- Configure HTTP client logging (for your Quantum service calls) -->
+    <logger name="org.apache.http" level="INFO"/>
+    <logger name="org.apache.http.wire" level="WARN"/>
+
+
+    <!-- Configure Jackson JSON processing logging -->
+    <logger name="com.fasterxml.jackson" level="WARN"/>
+
+    <logger name="ch.qos.logback" level="WARN"/>
+
+
+    <!-- Configure JPA/Hibernate logging (if you add database support) -->
+    <!-- <logger name="org.hibernate" level="INFO"/> -->
+    <!-- <logger name="org.hibernate.SQL" level="DEBUG"/> -->
+
+
+    <!-- ====================================================================
+         ROOT LOGGER: Default logger for all packages not explicitly configured
+         ==================================================================== -->
+    <root level="INFO">
+        <!-- Use CONSOLE appender for all loggers by default -->
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+
+    <!-- ====================================================================
+         PROFILES: Different configurations for different environments
+         ==================================================================== -->
+
+    <!-- Development Profile: More detailed logging -->
+    <springProfile name="dev">
+        <logger name="ai.sandbox" level="DEBUG"/>
+        <logger name="org.springframework.web" level="INFO"/>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+
+    <!-- Production Profile: Less verbose logging -->
+    <springProfile name="prod">
+        <logger name="ai.sandbox" level="INFO"/>
+        <logger name="org.springframework.web" level="WARN"/>
+        <root level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+</configuration>
+
