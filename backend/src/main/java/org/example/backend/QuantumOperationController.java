@@ -1,5 +1,6 @@
 package org.example.backend;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,19 +21,21 @@ import java.util.concurrent.TimeUnit;
 public class QuantumOperationController {
 
     private final QuantumService quantumService;
+    private final ObjectMapper objectMapper;
 
-    @GetMapping("/randomQuantumNumber/singleGeneration")
-    public ResponseEntity<String> singleGeneration() {
+    @GetMapping(path = "/randomQuantumNumber/singleGeneration", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<QuantumResponse> singleGeneration() {
         long timestamp = Instant.now().toEpochMilli();
         try {
             String result = quantumService.fetchOne(timestamp);
-            return ResponseEntity.ok(result);
+            QuantumResponse qr = new QuantumResponse(result, timestamp);
+            return ResponseEntity.ok(qr);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error fetching quantum number: " + e.getMessage());
+            QuantumResponse err = new QuantumResponse("ERROR: " + e.getMessage(), Instant.now().toEpochMilli());
+            return ResponseEntity.status(500).body(err);
         }
     }
 
-    @SuppressWarnings("resource") // scheduler lifecycle managed (cancel + shutdown) in emitter callbacks
     @GetMapping(path = "/randomQuantumNumber/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream(@RequestParam(name = "frequency", defaultValue = "1") long frequencySeconds) {
         final SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
@@ -42,13 +45,17 @@ public class QuantumOperationController {
             long timestamp = Instant.now().toEpochMilli();
             try {
                 String value = quantumService.fetchOne(timestamp);
-                emitter.send(SseEmitter.event().data(value));
+                QuantumResponse qr = new QuantumResponse(value, timestamp);
+                String json = objectMapper.writeValueAsString(qr);
+                // send as SSE data with JSON payload
+                emitter.send(SseEmitter.event().data(json).name("quantum"));
             } catch (IOException ioe) {
                 // client disconnected or IO error -> complete and shutdown
                 emitter.complete();
             } catch (Exception e) {
                 try {
-                    emitter.send(SseEmitter.event().data("ERROR: " + e.getMessage()));
+                    QuantumResponse err = new QuantumResponse("ERROR: " + e.getMessage(), Instant.now().toEpochMilli());
+                    emitter.send(SseEmitter.event().data(objectMapper.writeValueAsString(err)).name("quantum-error"));
                 } catch (IOException ioException) {
                     // ignore
                 }

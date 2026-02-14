@@ -8,3 +8,4 @@ To test once the app is running:
 
 curl http://localhost:8080/sandbox/randomQuantumNumber/singleGeneration
 curl --no-buffer http://localhost:8080/sandbox/randomQuantumNumber/stream?frequency=2
+
