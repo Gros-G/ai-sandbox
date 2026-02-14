@@ -3,7 +3,6 @@ package org.example.backend;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -13,22 +12,16 @@ import java.time.Duration;
 @Service
 public class QuantumService {
 
-    @Value("${quantum.url}")
-    private String qrngUrl;
+    private final HttpClient client;
+    private final String qrngUrl;
+    private final int readTimeoutSeconds;
 
-    @Value("${quantum.connectTimeoutSeconds:5}")
-    private int connectTimeoutSeconds;
-
-    @Value("${quantum.readTimeoutSeconds:10}")
-    private int readTimeoutSeconds;
-
-    private HttpClient client;
-
-    @PostConstruct
-    public void init() {
-        this.client = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(connectTimeoutSeconds))
-                .build();
+    public QuantumService(HttpClient client,
+                          @Value("${quantum.url}") String qrngUrl,
+                          @Value("${quantum.readTimeoutSeconds:10}") int readTimeoutSeconds) {
+        this.client = client;
+        this.qrngUrl = qrngUrl;
+        this.readTimeoutSeconds = readTimeoutSeconds;
     }
 
     public String fetchOne(long timestamp) throws Exception {

@@ -1,5 +1,6 @@
 package org.example.backend;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,13 +16,10 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 @RestController
+@RequiredArgsConstructor
 public class QuantumOperationController {
 
     private final QuantumService quantumService;
-
-    public QuantumOperationController(QuantumService quantumService) {
-        this.quantumService = quantumService;
-    }
 
     @GetMapping("/randomQuantumNumber/singleGeneration")
     public ResponseEntity<String> singleGeneration() {

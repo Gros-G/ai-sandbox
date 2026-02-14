@@ -37,7 +37,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.20</version>
+      <version>1.18.26</version>
       <scope>provided</scope>
     </dependency>
 
@@ -64,7 +64,6 @@
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
-          <release>${java.version}</release>
           <annotationProcessorPaths>
             <path>
               <groupId>org.projectlombok</groupId>
