@@ -50,12 +50,14 @@
   </dependencies>
 
   <build>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-      </plugin>
-
+      <plugins>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <configuration>
+            <mainClass>ai.sandbox.backend.SandboxApplication</mainClass>
+          </configuration>
+        </plugin>
       <!-- Ensure annotation processing for Lombok during Maven builds -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

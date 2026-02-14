@@ -1,9 +1,9 @@
-package org.example.backend.controller;
+package ai.sandbox.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.example.backend.dto.QuantumResponse;
-import org.example.backend.service.QuantumService;
+import ai.sandbox.backend.dto.QuantumResponse;
+import ai.sandbox.backend.service.QuantumService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

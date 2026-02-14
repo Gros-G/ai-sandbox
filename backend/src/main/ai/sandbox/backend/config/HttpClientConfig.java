@@ -1,4 +1,4 @@
-package org.example.backend.config;
+package ai.sandbox.backend.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

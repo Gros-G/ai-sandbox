@@ -1,4 +1,6 @@
 **/target/
+.out/
+**.iml
 
 ### IntelliJ IDEA ###
 out/
